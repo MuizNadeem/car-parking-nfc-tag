@@ -1,0 +1,152 @@
+@import 'tw-animate-css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.625rem;
+    /* Used by shadcn button sizes (rounded-[min(var(--radius-md),12px)] etc.) */
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --sidebar: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  * {
+    @apply box-border border-border outline-ring/50;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-background text-foreground antialiased;
+    background-image: radial-gradient(
+      circle at top,
+      hsl(var(--chart-2) / 0.18),
+      transparent 38%
+    );
+  }
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+      Helvetica, Arial, sans-serif;
+  }
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    /* Brand accent (parked / latest) — was hardcoded emerald */
+    --primary: 160 84% 45%;
+    --primary-foreground: 160 61% 10%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 160 84% 45%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  html {
+    @apply font-sans;
+  }
+
+  /* Let the app shell own the full viewport height (avoids clipped gradients). */
+  #root {
+    min-height: 100dvh;
+  }
+}
+
+@layer components {
+  /*
+   * Layer order: first image = top (closest to user). Opacity bumped so it reads on real displays;
+   * avoid background-attachment: fixed — it often hides gradients on mobile Safari.
+   */
+  .app-shell-bg {
+    min-height: 100dvh;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(
+        ellipse 130% 95% at 50% -28%,
+        hsl(var(--primary) / 0.28),
+        transparent 56%
+      ),
+      radial-gradient(
+        ellipse 95% 75% at 108% 8%,
+        hsl(var(--chart-2) / 0.18),
+        transparent 52%
+      ),
+      radial-gradient(
+        ellipse 85% 65% at -12% 92%,
+        hsl(var(--chart-4) / 0.16),
+        transparent 54%
+      ),
+      linear-gradient(
+        165deg,
+        hsl(var(--secondary)) 0%,
+        hsl(var(--background)) 42%,
+        hsl(var(--background)) 100%
+      );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+}
