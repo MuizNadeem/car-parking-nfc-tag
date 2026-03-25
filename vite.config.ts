@@ -17,6 +17,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     // For GitHub Pages, set BASE_PATH (example: /my-repo/) during build.
-    base: env.BASE_PATH || '/',
+    // Use relative URLs by default so the build works even when the repo name
+    // (and thus the Pages subpath) differs from `package.json`.
+    base: env.BASE_PATH || './',
   }
 })
