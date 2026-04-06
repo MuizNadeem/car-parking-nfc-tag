@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ConfirmDialog } from '@/components/parking/confirm-dialog'
 import { HistoryCard } from '@/components/parking/history-card'
 import { LatestSpotCard } from '@/components/parking/latest-spot-card'
 import { PageHeader } from '@/components/parking/page-header'
 
 import { useResolvePlaceLabels } from '@/hooks/useResolvePlaceLabels'
-import { parseScanFromSearch } from '@/lib/scanParser'
 import {
   addScanToHistory,
   clearHistory,
@@ -20,25 +19,68 @@ type ConfirmIntent =
   | { kind: 'delete-scan'; scanId: string }
 
 function App() {
-  const parseResult = useMemo(
-    () => parseScanFromSearch(window.location.search),
-    [],
-  )
-  const [history, setHistory] = useState<ParkingScan[]>(() => {
-    const existingHistory = getHistory()
-    if (!parseResult.hasAnyRelevantParams) {
-      return existingHistory
+  const [history, setHistory] = useState<ParkingScan[]>(() => getHistory())
+
+  useEffect(() => {
+    if (!window.isSecureContext || !('geolocation' in navigator)) {
+      console.warn(
+        '[nfc-car-tag] Geolocation is unavailable in this browser context.',
+      )
+      return
     }
 
-    if (parseResult.error || !parseResult.scan) {
-      if (parseResult.error) {
-        console.warn('[nfc-car-tag]', parseResult.error)
-      }
-      return existingHistory
-    }
+    let cancelled = false
 
-    return addScanToHistory(parseResult.scan)
-  })
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        if (cancelled) {
+          return
+        }
+
+        const lat = coords.latitude
+        const lng = coords.longitude
+        if (
+          !Number.isFinite(lat) ||
+          lat < -90 ||
+          lat > 90 ||
+          !Number.isFinite(lng) ||
+          lng < -180 ||
+          lng > 180
+        ) {
+          console.warn('[nfc-car-tag] Browser returned invalid coordinates.')
+          return
+        }
+
+        const timestamp = new Date().toISOString()
+        const scan: ParkingScan = {
+          id: `${timestamp}-${lat.toFixed(6)}-${lng.toFixed(6)}`,
+          timestamp,
+          lat,
+          lng,
+          savedAt: new Date().toISOString(),
+        }
+
+        setHistory(addScanToHistory(scan))
+      },
+      (error) => {
+        if (cancelled) {
+          return
+        }
+        console.warn(
+          `[nfc-car-tag] Unable to read current location: ${error.message}`,
+        )
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    )
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useResolvePlaceLabels(history, setHistory)
 
