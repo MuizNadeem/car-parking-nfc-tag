@@ -20,8 +20,14 @@ type ConfirmIntent =
 
 function App() {
   const [history, setHistory] = useState<ParkingScan[]>(() => getHistory())
+  const historyOnlyMode =
+    new URLSearchParams(window.location.search).get('history') === 'true'
 
   useEffect(() => {
+    if (historyOnlyMode) {
+      return
+    }
+
     if (!window.isSecureContext || !('geolocation' in navigator)) {
       console.warn(
         '[nfc-car-tag] Geolocation is unavailable in this browser context.',
@@ -80,7 +86,7 @@ function App() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [historyOnlyMode])
 
   useResolvePlaceLabels(history, setHistory)
 
