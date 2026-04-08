@@ -10,15 +10,13 @@ Static React + Vite app for storing NFC parking scans in browser local storage.
 
 ## What it does
 
-- Parses scan params from URL query string.
-- Accepts aliases:
-  - Latitude: `lat` or `latitude`
-  - Longitude: `lng`, `lon`, or `longitude`
-- Uses the **device/browser timestamp** when a scan is saved (query timestamp is ignored).
+- Reads current coordinates directly from the browser Geolocation API.
+- Uses the **device/browser timestamp** when a scan is saved.
 - Saves valid scans to local storage and keeps only the latest 20 entries.
 - Displays a modern mobile-first history UI.
 - Opens saved spots directly in Google Maps.
 - Resolves a short **place name** from coordinates using [OpenStreetMap Nominatim](https://nominatim.org/) (no API key). Labels are cached in local storage with each scan.
+- Supports a history-only mode using `?history=true` to view saved entries without adding a new record.
 
 ## Component structure
 
@@ -54,10 +52,14 @@ That command runs:
 
 Then configure GitHub Pages in your repo settings to serve from the `gh-pages` branch.
 
-## NFC URL example
+## URL modes
 
 ```text
-https://<username>.github.io/<repo>/?lat=25.204849&lng=55.270783
+Default (add new record from browser geolocation):
+https://<username>.github.io/<repo>/
+
+History-only (do not request location or add a record):
+https://<username>.github.io/<repo>/?history=true
 ```
 
 ## Reverse geocoding
